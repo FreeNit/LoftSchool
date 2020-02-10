@@ -17,21 +17,21 @@
    isAllTrue([100, 2, 3, 4, 5], n => n < 10) // вернет false
  */
 function isAllTrue(array, fn) {
-    if (!Array.isArray(array) || !array.length) {
+    if (!(array instanceof Array) || array.length === 0) {
         throw new Error('empty array');
     }
-    if (typeof fn !== 'function') { // или (typeof fn !== typeof new Function)
+    if (!(fn instanceof Function)) {
         throw new Error('fn is not a function');
     }
-    let isTrue = true;
 
-    array.filter( item => {
-        if (fn(item) === false) {
-            isTrue = false;
+    for ( let i = 0; i < array.length; i++) {
+        if (!(fn(array[i]))) {
+            return false;
         }
-    });
+    }
 
-    return isTrue;
+    return true;
+
 }
 
 /*
@@ -54,19 +54,17 @@ function isSomeTrue(array, fn) {
     if (!Array.isArray(array) || !array.length) {
         throw new Error('empty array');
     }
-    if (typeof fn !== 'function' ) {
+    if (!(fn instanceof Function)) {
         throw new Error('fn is not a function');
     }
 
-    let isFalse = false;
-
-    array.filter( item => {
-        if (fn(item) === true) {
-            isFalse = true;
+    for (let i = 0; i < array.length; i++) {
+        if (fn(array[i]) === true) {
+            return true;
         }
-    });
-
-    return isFalse;
+    }
+    
+    return false;
 }
 
 /*
@@ -80,18 +78,23 @@ function isSomeTrue(array, fn) {
  3.3: Необходимо выбрасывать исключение в случаях:
    - fn не является функцией (с текстом "fn is not a function")
  */
-function returnBadArguments(fn) {
-    if (typeof fn !== 'function' ) {
+function returnBadArguments(fn, ...args) {
+    if (!(fn instanceof Function)) {
         throw new Error('fn is not a function');
     }
 
-    return [...arguments].slice(1).filter(item =>{
+    const result = [];
+
+    for (const item of args) {
         try {
             fn(item);
         } catch (e) {
-            return item;
+            result.push(item);
         }
-    });
+    }
+
+    return result;
+
 }
 
 /*
@@ -117,23 +120,23 @@ function calculator(number = 0) {
     }
 
     const obj = {
-        sum () {
-            return [...arguments].reduce( (accumulator, currentValue) => {
+        sum (...args) {
+            return args.reduce( (accumulator, currentValue) => {
                 return accumulator + currentValue;
             }, number);
         },
 
-        dif () {
-            return [...arguments].reduce( (accumulator, currentValue) => {
+        dif (...args) {
+            return args.reduce( (accumulator, currentValue) => {
                 return accumulator - currentValue;
             }, number);
         },
 
-        div () {
+        div (...args) {
 
-            return [...arguments].reduce( (accumulator, currentValue) => {
+            return args.reduce( (accumulator, currentValue) => {
                 if (currentValue === 0) {
-                    throw new Error('division by 0')
+                    throw new Error('division by 0');
                 }
 
                 return accumulator / currentValue;
@@ -141,8 +144,8 @@ function calculator(number = 0) {
 
         },
 
-        mul () {
-            return [...arguments].reduce( (accumulator, currentValue) => {
+        mul (...args) {
+            return args.reduce( (accumulator, currentValue) => {
                 return accumulator * currentValue;
             }, number);
 
