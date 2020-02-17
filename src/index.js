@@ -52,13 +52,16 @@ function prepend(what, where) {
 function findAllPSiblings(where) {
     const pSiblingsArray = [];
 
-    for (const node of where.children) {
-        if (node.nextElementSibling && node.nextElementSibling.tagName === 'P') {
-            pSiblingsArray.push(node);
-        }
+    const pElements = where.querySelectorAll('p');
+
+    for (const item of pElements) {
+        
+        pSiblingsArray.push(item.previousElementSibling);
+        
     }
 
     return pSiblingsArray;
+
 }
 
 /*
@@ -120,13 +123,10 @@ function deleteTextNodes(where) {
    должно быть преобразовано в <span><div><b></b></div><p></p></span>
  */
 function deleteTextNodesRecursive(where) {
-    // debugger;
     for ( const textNode of [...where.childNodes]) {
         if (textNode.nodeType === 3) {
-        // console.log(`${textNode.tagName} ${textNode.nodeType}`);
             where.removeChild(textNode);
         } else {
-        // console.log(`${textNode.tagName} ${textNode.nodeType}`);
             deleteTextNodesRecursive(textNode);
         }
     }       
@@ -152,7 +152,43 @@ function deleteTextNodesRecursive(where) {
      texts: 3
    }
  */
-function collectDOMStat(root) {
+function collectDOMStat(root, obj) {
+    debugger;
+    if (obj === undefined) {
+        obj = {
+            tags: {},
+            classes: {},
+            texts: 0,
+        };
+    }  
+  
+    for (const node of root.childNodes) {
+        if (node.nodeType === 3) {
+            obj.texts++;
+             
+        }
+  
+        if (node.nodeType === 1) {
+            if (obj.tags.hasOwnProperty(node.tagName)) {
+                obj.tags[node.tagName]++;
+            } else {
+                obj.tags[node.tagName] = 1;
+            }
+            for (const className of node.classList) {
+                if (obj.classes.hasOwnProperty(className)) {
+                    obj.classes[className]++;
+                } else {
+                    obj.classes[className] = 1;
+                }
+            }
+        }
+  
+        if (node.childNodes.length > 0) {
+            collectDOMStat(node, obj);
+        }
+    }
+  
+    return obj;
 }
 
 /*
