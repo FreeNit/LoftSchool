@@ -153,7 +153,6 @@ function deleteTextNodesRecursive(where) {
    }
  */
 function collectDOMStat(root, obj) {
-    debugger;
     if (obj === undefined) {
         obj = {
             tags: {},
