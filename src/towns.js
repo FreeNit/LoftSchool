@@ -62,7 +62,7 @@ function loadTowns() {
                     return 0;
                 }))
             }
-        })
+        }) 
     })
 }
 
