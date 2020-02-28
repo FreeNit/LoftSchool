@@ -86,7 +86,6 @@ function isMatching(full, chunk) {
 function addTowns(array) {
     const fragment = document.createDocumentFragment();
 
-    // eslint-disable-next-line no-empty
     for (const town of array) {
         if (filterInput.value.length !== 0 && isMatching(town.name, filterInput.value)) {
             const block = document.createElement('div');
@@ -100,19 +99,19 @@ function addTowns(array) {
 
 function load() {
     loadTowns().then(data => {
-        // eslint-disable-next-line no-undef
         towns = data;
 
         loadingBlock.style.display = 'none';
         filterBlock.style.display = 'block';
-    }).catch(()=> {
-        loadingBlock.innerText = 'Не удалось загрузить города';
-        const btn = document.createElement('button');
+    })
+        .catch(()=> {
+            loadingBlock.innerText = 'Не удалось загрузить города';
+            const btn = document.createElement('button');
 
-        btn.innerText = 'Повторить';
-        btn.addEventListener('click', load);
-        homeworkContainer.appendChild(btn);
-    });
+            btn.innerText = 'Повторить';
+            btn.addEventListener('click', load);
+            homeworkContainer.appendChild(btn);
+        });
 }
 
 /* Блок с надписью "Загрузка" */
@@ -123,13 +122,13 @@ const filterBlock = homeworkContainer.querySelector('#filter-block');
 const filterInput = homeworkContainer.querySelector('#filter-input');
 /* Блок с результатами поиска */
 const filterResult = homeworkContainer.querySelector('#filter-result');
+let towns = [];
 
 load();
 
 filterInput.addEventListener('keyup', function() {
     // это обработчик нажатия кливиш в текстовом поле
     filterResult.innerHTML = '';
-    // eslint-disable-next-line no-undef
     addTowns(towns);
 });
 
